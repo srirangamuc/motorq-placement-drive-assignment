@@ -159,8 +159,7 @@ router.post("/cars/:id/book", async (req, res) => {
         car.isAvailable = false;
         await car.save();
 
-        const io = req.app.get("socketio")
-        io.emit("carBooked",{carId:id})
+        io.emit("carBooked",{carId:id,isAvailable:false})
         
         res.redirect("/cars"); // Redirect to the list of cars or a booking confirmation page
     } catch (error) {

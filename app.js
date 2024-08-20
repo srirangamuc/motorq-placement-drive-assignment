@@ -5,7 +5,7 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const User = require('./models/userModel');
 const multer = require('multer');
-const carRoutes = require('./routes/carRoutes'); // Ensure this path is correct
+const {router,setIo} = require('./routes/carRoutes'); // Ensure this path is correct
 const socketIo = require("socket.io")
 const http = require("http")
 
@@ -13,6 +13,8 @@ const http = require("http")
 const app = express();
 const server = http.createServer(app)
 const io = socketIo(server)
+
+setIo(io)
 
 io.on('connection',(socket)=>{
     console.log("A User Connected")
@@ -119,9 +121,9 @@ app.get('/logout', (req, res) => {
 });
 
 // Ensure carRoutes is used for routes starting with '/'
-app.use('/', carRoutes.router); // Use '/admin' as the base path for admin routes
+app.use('/', router); // Use '/admin' as the base path for admin routes
 
-carRoutes.setIo(io);
+setIo(io);
 
 server.listen(3000, () => {
     console.log('Server is running on port 3000');
