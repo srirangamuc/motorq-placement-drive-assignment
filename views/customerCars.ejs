@@ -114,13 +114,9 @@
                     Registration Number : <%= car.reg_no %><br>
                     <span class="status"><%= car.isAvailable ? 'Available' : 'Booked' %></span>
                 </div>
-                <% if (car.isAvailable) { %>
-                    <form action="/cars/<%= car._id %>/book" method="POST">
-                        <input type="hidden" name="startDate" value="<%= startDate %>">
-                        <input type="hidden" name="endDate" value="<%= endDate %>">
-                        <button type="submit" id="book-button-<%= car._id %>">Book Now</button>
-                    </form>
-                <% } %>
+                <form action="/cars/<%= car._id %>/book" method="POST">
+                    <button type="submit" id="book-button-<%= car._id %>">Book Now</button>
+                </form>
             </li>
         <% }); %>
     </ul>

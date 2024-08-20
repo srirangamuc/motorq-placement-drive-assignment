@@ -61,11 +61,13 @@ router.get("/admin/cars", async (req, res) => {
 });
 
 // Update car details (Admin only)
+// Update car details (Admin only)
 router.post("/admin/cars/:id/update", async (req, res) => {
     const { id } = req.params;
+    const { make, model, year, reg_no, fuelType, rental_price, latitude, longitude, startDate, endDate, isAvailable } = req.body;
     try {
-        const { make, model, year, reg_no, fuelType, rental_price, latitude, longitude } = req.body;
-        await Car.findByIdAndUpdate(id, {
+        // Convert startDate and endDate to Date objects if they are provided
+        const updateData = {
             make,
             model,
             year,
@@ -76,15 +78,24 @@ router.post("/admin/cars/:id/update", async (req, res) => {
                 type: 'Point',
                 coordinates: [parseFloat(longitude), parseFloat(latitude)]
             },
-            startDate:new Date(startDate),
-            endDate: new Date(endDate)
-        });
+            isAvailable: isAvailable === 'on'  // Convert checkbox value to boolean
+        };
+
+        if (startDate) {
+            updateData.startDate = new Date(startDate);
+        }
+        
+        if (endDate) {
+            updateData.endDate = new Date(endDate);
+        }
+        await Car.findByIdAndUpdate(id, updateData);
         res.redirect('/admin/cars');
     } catch (error) {
         console.error("Error updating car:", error);
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 // Get the car details for updating (Admin only)
 router.get("/admin/cars/:id/update", async (req, res) => {
@@ -100,6 +111,7 @@ router.get("/admin/cars/:id/update", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 // Delete a car (Admin only)
 router.post("/admin/cars/:id/delete", async (req, res) => {
@@ -161,12 +173,12 @@ router.post("/cars/:id/book", async (req, res) => {
 router.get('/maps',async(req,res)=>{
     try{
         const cars = await Car.find()
-        const carLocations = cars.map(car=>({
+        const cars_loc = cars.map(car=>({
             lat:car.location.coordinates[1],
             lng:car.location.coordinates[0],
             status: car.isAvailable ? 'Available':'In trip'
         }))
-        res.render("mapLocation",{carLocations})
+        res.render("mapLocation",{cars_loc})
     }
     catch(error){
         console.error("Error fetching cars:", error);

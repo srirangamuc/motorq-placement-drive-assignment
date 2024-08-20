@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <title>Car Locations Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+        .leaflet-container {
+            background: #f4f4f4;
+        }
+        .custom-icon {
+            background-color: #ffffff;
+            border-radius: 50%;
+            border: 2px solid #000000;
+            height: 24px;
+            width: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
-<style>
-    #map {
-        height: 600px;
-        width: 100%;
-    }
-    .leaflet-container {
-        background: #f4f4f4;
-    }
-    .custom-icon {
-        background-color: #ffffff;
-        border-radius: 50%;
-        border: 2px solid #000000;
-        height: 24px;
-        width: 24px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
 <body>
-    <h1>Car Locations</h1>
+    <h1>Car Locations Map</h1>
     <div id="map"></div>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         // Initialize the map
@@ -38,24 +39,28 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        <%= if (cars && cars.length > 0) { %>
+        <% if (cars_loc && cars_loc.length > 0) { %>
             const bounds = [];
-            <%= cars.forEach(car => { %>
-                const statusColor = car.isAvailable ? 'green' : 'red';
-        
-                L.marker([car.location.coordinates[1], car.location.coordinates[0]], {
+            <% cars_loc.forEach(car => { %>
+                // Define marker color based on car availability
+                const statusColor = <%= car.isAvailable ? "'green'" : "'red'" %>;
+
+                // Add a marker to the map
+                L.marker([<%= car.location.coordinates[1] %>, <%= car.location.coordinates[0] %>], {
                     icon: L.divIcon({
                         className: 'custom-icon',
-                        html: '<div style="background-color: ' + statusColor + '; width: 24px; height: 24px; border-radius: 50%;"></div>',
+                        html: `<div style="background-color: ${statusColor}; width: 24px; height: 24px; border-radius: 50%;"></div>`,
                         iconSize: [24, 24]
                     })
                 })
                 .addTo(map)
                 .bindPopup(`<b><%= car.make %> <%= car.model %></b><br>Status: <%= car.isAvailable ? 'Available' : 'Booked' %>`);
-        
-                bounds.push([car.location.coordinates[1], car.location.coordinates[0]]);
-            }); %>
-        
+                
+                // Extend map bounds
+                bounds.push([<%= car.location.coordinates[1] %>, <%= car.location.coordinates[0] %>]);
+            <% }); %>
+
+            // Fit map to bounds
             if (bounds.length > 0) {
                 const mapBounds = L.latLngBounds(bounds);
                 map.fitBounds(mapBounds);

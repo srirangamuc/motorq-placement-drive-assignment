@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FreshMart - Login</title>
+    <title>RentOn by Motorq - Login</title>
 </head>
+<link rel="stylesheet" href="css/login.css">
 <script>
     function togglePassword(){
         var x = document.getElementById("password");
@@ -16,13 +17,22 @@
     }
 </script>
 <body>
-    <h1>Login</h1>
-    <form action="/login" method="POST">
-        <input type="email" name="email" placeholder="Email" required><br>
-        <input type="password" name="password" placeholder="Password" id = "password" required><br>
-        <input type="checkbox" onclick="togglePassword()">Show Password
-        <button type="submit">Login</button>
-    </form>
-    <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+    <div class="container">
+        <div class="form-container">
+          <div id="forms">
+            <h2 class="heading">Login</h2>
+            <form action="/login" method="POST">
+                <input type="email" name="email" placeholder="Email" required><br>
+                <input type="password" name="password" placeholder="Password" id = "password" required><br>
+                <input type="checkbox" onclick="togglePassword()">Show Password
+                <button type="submit">Login</button>
+            </form>
+            <h5>
+              Don't have an account? <a class="link" href="/signup">SignUp</a>
+            </h5>
+            </div>
+          </div>
+        </div>
+      </div>
 </body>
 </html>
