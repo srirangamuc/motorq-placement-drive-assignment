@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Cars</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 8px 0 4px;
+        }
+        input, select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        ul {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0;
+            list-style: none;
+        }
+        li {
+            background: #fff;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .car-details {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Browse Available Cars</h1>
+    <form action="/cars" method="GET">
+        <label for="make">Make:</label>
+        <input type="text" id="make" name="make">
+
+        <label for="model">Model:</label>
+        <input type="text" id="model" name="model">
+
+        <label for="fuelType">Fuel Type:</label>
+        <select id="fuelType" name="fuelType">
+            <option value="">Any</option>
+            <option value="Petrol">Petrol</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Electric">Electric</option>
+            <option value="Hybrid">Hybrid</option>
+        </select>
+
+        <label for="minRent">Min Rent:</label>
+        <input type="number" id="minRent" name="minRent" step="0.01" min="0">
+
+        <label for="maxRent">Max Rent:</label>
+        <input type="number" id="maxRent" name="maxRent" step="0.01" min="0">
+
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required>
+
+        <button type="submit">Search Cars</button>
+    </form>
+
+    <h2>Available Cars</h2>
+    <ul>
+        <% cars.forEach(car => { %>
+            <li>
+                <div class="car-details">
+                    <strong><%= car.make %> <%= car.model %> (<%= car.year %>)</strong> <br>
+                    Fuel Type: <%= car.fuelType %> <br>
+                    Rent Price: $<%= car.rental_price %>/day <br>
+                    Registration Number : <%= car.reg_no%><br>
+                </div>
+                <form action="/cars/<%= car._id %>/book" method="POST">
+                    <input type="hidden" name="startDate" value="<%= startDate %>">
+                    <input type="hidden" name="endDate" value="<%= endDate %>">
+                    <button type="submit">Book Now</button>
+                </form>
+            </li>
+        <% }); %>
+    </ul>
+</body>
+</html>

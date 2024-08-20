@@ -1,34 +1,30 @@
 const express = require("express");
-const bodyparser = require('body-parser');
+const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
 const session = require('express-session');
 const bcrypt = require('bcrypt');
 const User = require('./models/userModel');
-const multer = require('multer')
+const multer = require('multer');
+const carRoutes = require('./routes/carRoutes'); // Ensure this path is correct
 
 const app = express();
 
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null,'uploads/')
+        cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        cb(null,`${file.originalname}`)
+        cb(null, `${Date.now()}_${file.originalname}`);
     }
-})
+});
 
-const upload = multer({storage})
+const upload = multer({ storage });
 
-
-
-// Correct MongoDB connection string with the database name 'farmers'
 mongoose.connect("mongodb://localhost:27017/carsales", {
-    // No need for deprecated options anymore
 }).then(() => console.log('Database connection successful'))
   .catch(err => console.error("Database connection error", err));
 
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'));
 app.use(session({
     secret: 'secretkey',
@@ -38,9 +34,9 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 
-app.get("/",(req,res)=>{
-    res.render("index")
-})
+app.get("/", (req, res) => {
+    res.render("index");
+});
 
 app.get('/dashboard', (req, res) => {
     if (req.session.userId) {
@@ -104,6 +100,9 @@ app.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/');
 });
+
+// Ensure carRoutes is used for routes starting with '/'
+app.use('/', carRoutes.router); // Use '/admin' as the base path for admin routes
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

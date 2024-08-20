@@ -3,10 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>RentOnGo - By Motorq</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=New+Amsterdam&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: "New Amsterdam", sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            font-size: x-large;
+        }
+        body::-webkit-scrollbar{
+            display: none;
+        }
+        nav {
+            padding-top: 20px;
+            margin-right:20px;
+            display: flex;
+            justify-content: right;
+        }
+
+        nav a {
+            color: #000;
+            padding: 15px 40px;
+            text-decoration: none;
+        }
+        nav button{
+            width: 150px;
+            font-family: "New Amsterdam", sans-serif;
+            font-size: x-large;
+            background-color: #007bff;
+            border-radius:10px;
+            border:none
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section .about{
+            height: 100vh; /* Full viewport height */
+            padding: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section {
+            height: 100vh; /* Full viewport height */
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section p{
+            align-items: center;
+        }
+
+        
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        footer p {
+            font-size: 16px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            align-self: start;
+        }
+
+
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to home page</h1>
-    <a href="/login">Click Here to Login</a>
+    <nav>
+        <a href="#about">About Us</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+        <button ><a href="/login">Login</a></button>
+    </nav>
+
+    <main>
+        <section id="about" class="section about">
+            <h2>About Us</h2>
+            <p>We offer a wide range of cars for rental at competitive prices. Our fleet includes various models to suit all your needs, whether you are looking for a compact car for city driving or a spacious SUV for a family road trip.</p>
+        </section>
+
+        <section id="services" class="section">
+            <h2>Our Services</h2>
+            <p>At Car Rental Service, we provide a variety of services to enhance your rental experience. From easy online bookings to flexible rental periods and 24/7 customer support, we strive to make your journey as smooth as possible.</p>
+            <a href="/login" class="cta-button">Book Now</a>
+        </section>
+
+        <section id="contact" class="section">
+            <h2>Contact Us</h2>
+            <p>For inquiries or support, feel free to reach out to us. We are here to help you with all your rental needs.</p>
+            <p>Email: info@carrentalservice.com</p>
+            <p>Phone: +1 234 567 890</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Car Rental Service. All rights reserved.</p>
+    </footer>
 </body>
 </html>
