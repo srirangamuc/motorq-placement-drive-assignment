@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UC Car Rentals - Signup</title>
+</head>
+<script>
+    function togglePassword(){
+        var x = document.getElementById("password");
+        if (x.type === "password") {
+            x.type = "text";
+        } else {
+            x.type = "password";
+        }
+    }
+</script>
+<body>
+    <h1>Signup</h1>
+    <form action="/signup" method="POST" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Name" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Password" id="password" required><br>
+        <input type="checkbox" onclick="togglePassword()">Show Password<br>
+        <input type="tel" name="phone" placeholder="Phone Number" required><br>
+        <input type="file" name="driver_license" placeholder="Driver's License Image" required><br>
+        <select name="role">
+            <option value="customer">Normal User</option>
+            <option value="admin">Admin</option>
+        </select><br>
+        <button type="submit">Sign Up</button>
+    </form>
+</body>
+</html>
