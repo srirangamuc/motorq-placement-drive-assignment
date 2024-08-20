@@ -20,6 +20,14 @@
         <input type="number" name="rental_price" placeholder="Rent Price" step="0.01" required><br>
         <input type="number" name="latitude" placeholder="Latitude" step="0.000001" required><br>
         <input type="number" name="longitude" placeholder="Longitude" step="0.000001" required><br>
+        
+        <!-- Add Date and Time Pickers -->
+        <label>Start Date and Time:</label>
+        <input type="datetime-local" name="startDateTime" required><br>
+        
+        <label>End Date and Time:</label>
+        <input type="datetime-local" name="endDateTime" required><br>
+        
         <button type="submit">Add Car</button>
     </form>
 
@@ -35,6 +43,8 @@
                 <th>Fuel Type</th>
                 <th>Rent Price</th>
                 <th>Location (Lat, Long)</th>
+                <th>Start Date and Time</th> <!-- Added column for start date and time -->
+                <th>End Date and Time</th> <!-- Added column for end date and time -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -48,6 +58,8 @@
                     <td><%= car.fuelType %></td>
                     <td><%= car.rental_price %></td>
                     <td><%= car.location.coordinates[1] %>, <%= car.location.coordinates[0] %></td>
+                    <td><%= car.startDateTime ? new Date(car.startDateTime).toLocaleString() : 'N/A' %></td>
+                    <td><%= car.endDateTime ? new Date(car.endDateTime).toLocaleString() : 'N/A' %></td>
                     <td>
                         <!-- Links to edit or delete the car -->
                         <a href="/admin/cars/<%= car._id %>/update">Edit</a> |

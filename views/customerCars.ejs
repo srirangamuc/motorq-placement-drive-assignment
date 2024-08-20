@@ -65,6 +65,9 @@
         .car-details {
             margin-bottom: 10px;
         }
+        .status {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -104,19 +107,42 @@
     <ul>
         <% cars.forEach(car => { %>
             <li>
-                <div class="car-details">
+                <div class="car-details" id="car-<%= car._id %>">
                     <strong><%= car.make %> <%= car.model %> (<%= car.year %>)</strong> <br>
                     Fuel Type: <%= car.fuelType %> <br>
                     Rent Price: $<%= car.rental_price %>/day <br>
-                    Registration Number : <%= car.reg_no%><br>
+                    Registration Number : <%= car.reg_no %><br>
+                    <span class="status"><%= car.isAvailable ? 'Available' : 'Booked' %></span>
                 </div>
-                <form action="/cars/<%= car._id %>/book" method="POST">
-                    <input type="hidden" name="startDate" value="<%= startDate %>">
-                    <input type="hidden" name="endDate" value="<%= endDate %>">
-                    <button type="submit">Book Now</button>
-                </form>
+                <% if (car.isAvailable) { %>
+                    <form action="/cars/<%= car._id %>/book" method="POST">
+                        <input type="hidden" name="startDate" value="<%= startDate %>">
+                        <input type="hidden" name="endDate" value="<%= endDate %>">
+                        <button type="submit" id="book-button-<%= car._id %>">Book Now</button>
+                    </form>
+                <% } %>
             </li>
         <% }); %>
     </ul>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on("carBooked", (data) => {
+            console.log('carBooked event received')
+            const button = document.getElementById(`book-button-${data.carId}`);
+            const carElement = document.getElementById(`car-${data.carId}`);
+            if (button) {
+                button.disabled = true;
+                button.innerHTML = "Booked";
+                button.style.backgroundColor = 'red';
+                button.style.color = 'white';
+            }
+            if (carElement) {
+                carElement.querySelector(".status").innerText = "Booked";
+            }
+        });
+    </script>
 </body>
 </html>

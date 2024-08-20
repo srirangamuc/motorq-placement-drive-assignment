@@ -2,7 +2,11 @@ const express = require("express");
 const Car = require("../models/carModel");
 const router = express.Router();
 const { isAdmin } = require("../middlewares/authForAdmin");
+let io;
 
+const setIo = (ioInstance)=>{
+    io = ioInstance
+}
 // Middleware to check if the user is an admin
 router.use("/admin/*", isAdmin);
 
@@ -71,7 +75,9 @@ router.post("/admin/cars/:id/update", async (req, res) => {
             location: {
                 type: 'Point',
                 coordinates: [parseFloat(longitude), parseFloat(latitude)]
-            }
+            },
+            startDate:new Date(startDate),
+            endDate: new Date(endDate)
         });
         res.redirect('/admin/cars');
     } catch (error) {
@@ -140,6 +146,9 @@ router.post("/cars/:id/book", async (req, res) => {
         // Update the car to mark it as unavailable
         car.isAvailable = false;
         await car.save();
+
+        const io = req.app.get("socketio")
+        io.emit("carBooked",{carId:id})
         
         res.redirect("/cars"); // Redirect to the list of cars or a booking confirmation page
     } catch (error) {
@@ -148,4 +157,20 @@ router.post("/cars/:id/book", async (req, res) => {
     }
 });
 
-module.exports = {router};
+
+router.get('/maps',async(req,res)=>{
+    try{
+        const cars = await Car.find()
+        const carLocations = cars.map(car=>({
+            lat:car.location.coordinates[1],
+            lng:car.location.coordinates[0],
+            status: car.isAvailable ? 'Available':'In trip'
+        }))
+        res.render("mapLocation",{carLocations})
+    }
+    catch(error){
+        console.error("Error fetching cars:", error);
+        res.status(500).send("Internal Server Error");
+    }
+})
+module.exports = {router,setIo};

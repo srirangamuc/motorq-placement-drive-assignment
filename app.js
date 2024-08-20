@@ -6,8 +6,25 @@ const bcrypt = require('bcrypt');
 const User = require('./models/userModel');
 const multer = require('multer');
 const carRoutes = require('./routes/carRoutes'); // Ensure this path is correct
+const socketIo = require("socket.io")
+const http = require("http")
+
 
 const app = express();
+const server = http.createServer(app)
+const io = socketIo(server)
+
+io.on('connection',(socket)=>{
+    console.log("A User Connected")
+
+    socket.on('bookCar',(data)=>{
+        io.emit('carBooked',data)
+    })
+
+    socket.on('disconnect',()=>{
+        console.log("A User Disconnected")
+    })
+})
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -104,6 +121,8 @@ app.get('/logout', (req, res) => {
 // Ensure carRoutes is used for routes starting with '/'
 app.use('/', carRoutes.router); // Use '/admin' as the base path for admin routes
 
-app.listen(3000, () => {
+carRoutes.setIo(io);
+
+server.listen(3000, () => {
     console.log('Server is running on port 3000');
 });

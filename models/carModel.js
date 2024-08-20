@@ -15,6 +15,7 @@ const carSchema = new mongoose.Schema({
             endDate: { type: Date, required: true }
         }
     ],
+    rating: {type:Number,min:0,max:5,default:0},
     location: {
         type: { type: String, enum: ['Point'], default: 'Point' },
         coordinates: { type: [Number], required: true },
