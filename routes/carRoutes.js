@@ -10,6 +10,7 @@ const setIo = (ioInstance)=>{
 // Middleware to check if the user is an admin
 router.use("/admin/*", isAdmin);
 
+
 // Add a new car (Admin only)
 router.post("/admin/cars", async (req, res) => {
     try {
@@ -168,20 +169,20 @@ router.post("/cars/:id/book", async (req, res) => {
     }
 });
 
-
-router.get('/maps',async(req,res)=>{
-    try{
-        const cars = await Car.find()
-        const cars_loc = cars.map(car=>({
-            lat:car.location.coordinates[1],
-            lng:car.location.coordinates[0],
-            status: car.isAvailable ? 'Available':'In trip'
-        }))
-        res.render("mapLocation",{cars_loc})
-    }
-    catch(error){
-        console.error("Error fetching cars:", error);
+// Route to get all car locations for map
+router.get('/cars/locations', async (req, res) => {
+    try {
+        const cars = await Car.find({}, 'location'); // Fetch only the location field
+        res.json(cars);
+    } catch (error) {
+        console.error("Error fetching car locations:", error);
         res.status(500).send("Internal Server Error");
     }
+});
+
+
+
+router.get('/map',async(req,res)=>{
+    res.render("mapView")
 })
 module.exports = {router,setIo};

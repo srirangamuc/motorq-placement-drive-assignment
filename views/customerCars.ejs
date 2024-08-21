@@ -4,140 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Cars</title>
-    <link rel="stylesheet" href="/styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        h1, h2 {
-            text-align: center;
-            color: #333;
-        }
-        form {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            display: block;
-            margin: 8px 0 4px;
-        }
-        input, select {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        ul {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0;
-            list-style: none;
-        }
-        li {
-            background: #fff;
-            margin-bottom: 10px;
-            padding: 15px;
-            border-radius: 4px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-        .car-details {
-            margin-bottom: 10px;
-        }
-        .status {
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/customer.css">
 </head>
 <body>
     <h1>Browse Available Cars</h1>
-    <form action="/cars" method="GET">
-        <label for="make">Make:</label>
-        <input type="text" id="make" name="make">
-
-        <label for="model">Model:</label>
-        <input type="text" id="model" name="model">
-
-        <label for="fuelType">Fuel Type:</label>
-        <select id="fuelType" name="fuelType">
-            <option value="">Any</option>
-            <option value="Petrol">Petrol</option>
-            <option value="Diesel">Diesel</option>
-            <option value="Electric">Electric</option>
-            <option value="Hybrid">Hybrid</option>
-        </select>
-
-        <label for="minRent">Min Rent:</label>
-        <input type="number" id="minRent" name="minRent" step="0.01" min="0">
-
-        <label for="maxRent">Max Rent:</label>
-        <input type="number" id="maxRent" name="maxRent" step="0.01" min="0">
-
-        <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate" required>
-
-        <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate" required>
-
-        <button type="submit">Search Cars</button>
-    </form>
-
-    <h2>Available Cars</h2>
-    <ul>
-        <% cars.forEach(car => { %>
-            <li>
-                <div class="car-details" id="car-<%= car._id %>">
-                    <strong><%= car.make %> <%= car.model %> (<%= car.year %>)</strong> <br>
-                    Fuel Type: <%= car.fuelType %> <br>
-                    Rent Price: $<%= car.rental_price %>/day <br>
-                    Registration Number : <%= car.reg_no %><br>
-                    <span class="status"><%= car.isAvailable ? 'Available' : 'Booked' %></span>
-                </div>
-                <form action="/cars/<%= car._id %>/book" method="POST">
-                    <button type="submit" id="book-button-<%= car._id %>">Book Now</button>
+    
+    <div class="container">
+        <!-- Left Panel: Filters and Car List -->
+        <div class="left-panel">
+            <!-- Filters Section -->
+            <div class="filter-section">
+                <h2>Filters</h2>
+                <form action="/cars" method="GET">
+                    <label for="make">Make:</label>
+                    <input type="text" id="make" name="make">
+                    
+                    <label for="model">Model:</label>
+                    <input type="text" id="model" name="model">
+                    
+                    <label for="fuelType">Fuel Type:</label>
+                    <select id="fuelType" name="fuelType">
+                        <option value="">Any</option>
+                        <option value="Petrol">Petrol</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Hybrid">Hybrid</option>
+                    </select>
+                    
+                    <label for="minRent">Min Rent:</label>
+                    <input type="number" id="minRent" name="minRent" step="0.01" min="0">
+                    
+                    <label for="maxRent">Max Rent:</label>
+                    <input type="number" id="maxRent" name="maxRent" step="0.01" min="0">
+                    
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" required>
+                    
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" required>
+                    
+                    <button type="submit">Search Cars</button>
                 </form>
-            </li>
-        <% }); %>
-    </ul>
+            </div>
 
+            <!-- Available Cars Section -->
+            <div class="car-list-section">
+                <h2>Available Cars</h2>
+                <ul id="car-list">
+                    <% cars.forEach(car => { %>
+                        <li>
+                            <div class="car-details" id="car-<%= car._id %>">
+                                <strong><%= car.make %> <%= car.model %> (<%= car.year %>)</strong> <br>
+                                Fuel Type: <%= car.fuelType %> <br>
+                                Rent Price: $<%= car.rental_price %>/day <br>
+                                Registration Number: <%= car.reg_no %><br>
+                                <span class="status <%= car.isAvailable ? 'available' : 'booked' %>"><%= car.isAvailable ? 'Available' : 'Booked' %></span>
+                            </div>
+                            <form action="/cars/<%= car._id %>/book" method="POST">
+                                <button type="submit" id="book-button-<%= car._id %>">Book Now</button>
+                            </form>
+                        </li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Panel: Map -->
+        <div class="right-panel">
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the map
+            const map = L.map('map').setView([21.0000,78.0000], 5); // Default view (center and zoom)
 
-        socket.on("carBooked", (data) => {
-            console.log('carBooked event received')
-            const button = document.getElementById(`book-button-${data.carId}`);
-            const carElement = document.getElementById(`car-${data.carId}`);
-            if (button) {
-                button.disabled = true;
-                button.innerHTML = "Booked";
-                button.style.backgroundColor = 'red';
-                button.style.color = 'white';
-            }
-            if (carElement) {
-                carElement.querySelector(".status").innerText = "Booked";
-            }
+            // Add a tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Fetch car locations
+            fetch('/cars/locations')
+                .then(response => response.json())
+                .then(cars => {
+                    cars.forEach(car => {
+                        // Add a marker for each car
+                        L.marker([car.location.coordinates[1], car.location.coordinates[0]])
+                            .addTo(map)
+                            .bindPopup(`<b>Car Location</b><br>
+                            Latitude: ${car.location.coordinates[1]}<br>
+                            Longitude: ${car.location.coordinates[0]}<br>
+                            Status: ${isAvailable ? 'Available' : 'Booked'}
+                            `);
+                    });
+                })
+                .catch(error => console.error('Error fetching car locations:', error));
         });
     </script>
 </body>
